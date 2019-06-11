@@ -1,0 +1,6 @@
+resetHealth: true
+resetFood: true
+resetInventory: false
+resetXp: false
+dropInventory: true
+dropXp: true

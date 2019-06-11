@@ -1,0 +1,10 @@
+name: FastRespawn
+version: "${pom.version}"
+api: ["1.0.0"]
+author: PetteriM1
+main: idk.plugin.fastrespawn.Main
+
+permissions:
+  fastrespawn:
+    description: "Use fast respawns"
+    default: true
