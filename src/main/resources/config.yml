@@ -4,3 +4,4 @@ resetInventory: false
 resetXp: false
 dropInventory: true
 dropXp: true
+deathMessages: true
