@@ -140,10 +140,10 @@ public class Main extends PluginBase implements Listener {
                 }
             }
 
-            PlayerDeathEvent ev = new PlayerDeathEvent(p, p.getDrops(), new TranslationContainer(msg, params.toArray(new String[0])), p.getExperienceLevel());
-            getServer().getPluginManager().callEvent(ev);
-
             if (e.getFinalDamage() >= p.getHealth()) {
+                PlayerDeathEvent ev = new PlayerDeathEvent(p, p.getDrops(), new TranslationContainer(msg, params.toArray(new String[0])), p.getExperienceLevel());
+                getServer().getPluginManager().callEvent(ev);
+                
                 if (c.getBoolean("resetHealth")) {
                     p.setHealth(p.getMaxHealth());
                 }
