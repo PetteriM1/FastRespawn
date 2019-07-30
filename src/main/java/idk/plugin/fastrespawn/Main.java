@@ -29,6 +29,13 @@ public class Main extends PluginBase implements Listener {
     public void onEnable() {
         saveDefaultConfig();
         c = getConfig();
+        if (c.getInt("configVersion") != 2) {
+            c.set("removeEffects", true);
+            c.set("extinguish", true);
+            c.save();
+            getLogger().info("Config updated");
+            c = getConfig();
+        }
         getServer().getPluginManager().registerEvents(this, this);
     }
 
@@ -150,6 +157,14 @@ public class Main extends PluginBase implements Listener {
 
                 if (c.getBoolean("resetFood")) {
                     p.getFoodData().setLevel(p.getFoodData().getMaxLevel());
+                }
+
+                if (c.getBoolean("removeEffects")) {
+                    p.removeAllEffects();
+                }
+
+                if (c.getBoolean("extinguish")) {
+                    p.extinguish();
                 }
 
                 if (c.getBoolean("dropInventory")) {

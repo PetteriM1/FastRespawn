@@ -1,7 +1,10 @@
+configVersion: 2
 resetHealth: true
 resetFood: true
 resetInventory: false
 resetXp: false
+removeEffects: true
+extinguish: true
 dropInventory: true
 dropXp: true
 deathMessages: true
