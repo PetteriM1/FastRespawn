@@ -131,6 +131,8 @@ public class Main extends PluginBase implements Listener {
                                     msg = "death.attack.explosion.player";
                                     params.add(!Objects.equals(ent.getNameTag(), "") ? ent.getNameTag() : ent.getName());
                                     break;
+                                } else {
+                                    msg = "death.attack.explosion";
                                 }
                             } else {
                                 msg = "death.attack.explosion";
