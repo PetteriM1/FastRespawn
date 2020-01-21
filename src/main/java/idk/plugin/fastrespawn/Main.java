@@ -48,7 +48,7 @@ public class Main extends PluginBase implements Listener {
                 return;
             }
 
-            if (e.getFinalDamage() >= p.getHealth()) {
+            if (p.getHealth() - e.getFinalDamage() < 1f) {
                 boolean dmsg = c.getBoolean("deathMessages");
                 String msg = "";
                 List<String> params = new ArrayList<>();
