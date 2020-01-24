@@ -1,10 +1,9 @@
 package idk.plugin.fastrespawn;
 
-import cn.nukkit.Player;
 import cn.nukkit.Server;
-import cn.nukkit.block.Block;
+import cn.nukkit.block.BlockIds;
 import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.EntityLiving;
+import cn.nukkit.entity.impl.EntityLiving;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
@@ -15,6 +14,7 @@ import cn.nukkit.event.player.PlayerDeathEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.lang.TranslationContainer;
 import cn.nukkit.math.NukkitRandom;
+import cn.nukkit.player.Player;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.Config;
 
@@ -115,7 +115,7 @@ public class Main extends PluginBase implements Listener {
                             break;
                         case CONTACT:
                             if (e instanceof EntityDamageByBlockEvent) {
-                                if (((EntityDamageByBlockEvent) e).getDamager().getId() == Block.CACTUS) {
+                                if (((EntityDamageByBlockEvent) e).getDamager().getId() == BlockIds.CACTUS) {
                                     msg = "death.attack.cactus";
                                 }
                             }
