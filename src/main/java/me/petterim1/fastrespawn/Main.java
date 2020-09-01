@@ -1,4 +1,4 @@
-package idk.plugin.fastrespawn;
+package me.petterim1.fastrespawn;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
@@ -12,10 +12,16 @@ import cn.nukkit.event.entity.EntityDamageByBlockEvent;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.player.PlayerDeathEvent;
+import cn.nukkit.inventory.Inventory;
+import cn.nukkit.inventory.PlayerInventory;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemTotem;
 import cn.nukkit.lang.TranslationContainer;
 import cn.nukkit.math.NukkitRandom;
+import cn.nukkit.network.protocol.EntityEventPacket;
+import cn.nukkit.network.protocol.LevelEventPacket;
 import cn.nukkit.plugin.PluginBase;
+import cn.nukkit.potion.Effect;
 import cn.nukkit.utils.Config;
 
 import java.util.ArrayList;
@@ -48,7 +54,31 @@ public class Main extends PluginBase implements Listener {
                 return;
             }
 
-            if (p.getHealth() - e.getFinalDamage() < 1f) {
+            if (p.getHealth() - e.getFinalDamage() < 1.0f) {
+                if (e.getCause() != EntityDamageEvent.DamageCause.VOID && e.getCause() != EntityDamageEvent.DamageCause.SUICIDE) {
+                    Inventory inventory = p.getOffhandInventory();
+                    Item totem = Item.get(Item.TOTEM, 0, 1);
+                    if (inventory.contains(totem) || ((PlayerInventory) (inventory = p.getInventory())).getItemInHand() instanceof ItemTotem) {
+                        inventory.removeItem(totem);
+                        p.getLevel().addLevelEvent(p, LevelEventPacket.EVENT_SOUND_TOTEM);
+                        p.extinguish();
+                        p.removeAllEffects();
+                        p.setHealth(1);
+
+                        p.addEffect(Effect.getEffect(Effect.REGENERATION).setDuration(800).setAmplifier(1));
+                        p.addEffect(Effect.getEffect(Effect.FIRE_RESISTANCE).setDuration(800).setAmplifier(1));
+                        p.addEffect(Effect.getEffect(Effect.ABSORPTION).setDuration(100).setAmplifier(1));
+
+                        EntityEventPacket pk = new EntityEventPacket();
+                        pk.eid = p.getId();
+                        pk.event = EntityEventPacket.CONSUME_TOTEM;
+                        p.dataPacket(pk);
+
+                        e.setCancelled(true);
+                        return;
+                    }
+                }
+
                 boolean dmsg = c.getBoolean("deathMessages");
                 String msg = "";
                 List<String> params = new ArrayList<>();
