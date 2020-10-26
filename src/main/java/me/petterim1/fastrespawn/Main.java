@@ -12,11 +12,11 @@ import cn.nukkit.event.entity.EntityDamageByBlockEvent;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.player.PlayerDeathEvent;
-import cn.nukkit.inventory.Inventory;
-import cn.nukkit.inventory.PlayerInventory;
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemTotem;
+import cn.nukkit.item.ItemID;
+import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.lang.TranslationContainer;
+import cn.nukkit.level.ParticleEffect;
 import cn.nukkit.math.NukkitRandom;
 import cn.nukkit.network.protocol.EntityEventPacket;
 import cn.nukkit.network.protocol.LevelEventPacket;
@@ -56,11 +56,18 @@ public class Main extends PluginBase implements Listener {
 
             if (p.getHealth() - e.getFinalDamage() < 1.0f) {
                 if (e.getCause() != EntityDamageEvent.DamageCause.VOID && e.getCause() != EntityDamageEvent.DamageCause.SUICIDE) {
-                    Inventory inventory = p.getOffhandInventory();
-                    Item totem = Item.get(Item.TOTEM, 0, 1);
-                    if (inventory.contains(totem) || ((PlayerInventory) (inventory = p.getInventory())).getItemInHand() instanceof ItemTotem) {
-                        inventory.removeItem(totem);
+                    boolean totem = false;
+                    if (p.getOffhandInventory().getItem(0).getId() == ItemID.TOTEM) {
+                        p.getOffhandInventory().clear(0);
+                        totem = true;
+                    } else if (p.getInventory().getItemInHand().getId() == ItemID.TOTEM) {
+                        p.getInventory().clear(p.getInventory().getHeldItemIndex());
+                        totem = true;
+                    }
+                    if (totem) {
                         p.getLevel().addLevelEvent(p, LevelEventPacket.EVENT_SOUND_TOTEM);
+                        p.getLevel().addParticleEffect(p, ParticleEffect.TOTEM);
+
                         p.extinguish();
                         p.removeAllEffects();
                         p.setHealth(1);
@@ -201,10 +208,15 @@ public class Main extends PluginBase implements Listener {
 
                 if (c.getBoolean("dropInventory")) {
                     for (Item item : p.getDrops()) {
-                        p.getLevel().dropItem(p, item, null, true, 40);
+                        if (item.getEnchantment(Enchantment.ID_VANISHING_CURSE) == null) {
+                            p.getLevel().dropItem(p, item, null, true, 40);
+                        }
                     }
 
-                    p.getLevel().dropItem(p, p.getCursorInventory().getItem(0), null, true, 40);
+                    Item cursor = p.getCursorInventory().getItem(0);
+                    if (cursor.getEnchantment(Enchantment.ID_VANISHING_CURSE) == null) {
+                        p.getLevel().dropItem(p, cursor, null, true, 40);
+                    }
 
                     p.getInventory().clearAll();
                     p.getCursorInventory().clearAll();
@@ -215,13 +227,14 @@ public class Main extends PluginBase implements Listener {
 
                 if (c.getBoolean("dropXp")) {
                     if (p.isSurvival() || p.isAdventure()) {
+                        NukkitRandom rand = new NukkitRandom();
                         int exp = p.getExperience() * 7;
                         if (exp > 100) exp = 100;
                         int add = 1;
 
-                        for (int ii = 1; ii < exp; ii += add) {
+                        for (int i = 1; i < exp; i += add) {
                             p.getLevel().dropExpOrb(p, add);
-                            add = new NukkitRandom().nextRange(1, 3);
+                            add = rand.nextRange(1, 3);
                         }
                     }
 
@@ -234,7 +247,7 @@ public class Main extends PluginBase implements Listener {
                     getServer().broadcast(ev.getDeathMessage(), Server.BROADCAST_CHANNEL_USERS);
                 }
 
-                p.teleport(p.getSpawn());
+                p.teleport(p.getSpawn(), null);
                 e.setCancelled(true);
             }
         }
