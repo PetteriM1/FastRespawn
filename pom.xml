@@ -6,7 +6,7 @@
 
     <groupId>me.petterim1.fastrespawn</groupId>
     <artifactId>FastRespawn</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.5.1</version>
     <build>
         <defaultGoal>install</defaultGoal>
         <sourceDirectory>${basedir}/src/main/java</sourceDirectory>

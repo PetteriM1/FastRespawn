@@ -73,7 +73,7 @@ public class Main extends PluginBase implements Listener {
                         p.setHealth(1);
 
                         p.addEffect(Effect.getEffect(Effect.REGENERATION).setDuration(800).setAmplifier(1));
-                        p.addEffect(Effect.getEffect(Effect.FIRE_RESISTANCE).setDuration(800).setAmplifier(1));
+                        p.addEffect(Effect.getEffect(Effect.FIRE_RESISTANCE).setDuration(800));
                         p.addEffect(Effect.getEffect(Effect.ABSORPTION).setDuration(100).setAmplifier(1));
 
                         EntityEventPacket pk = new EntityEventPacket();
